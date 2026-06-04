@@ -36,4 +36,9 @@
     // 3.4 Run the Installation Script - Once you have uploaded the WordPress files, you can run the installation script by navigating to your website in a web browser. Follow the prompts to complete the installation process.
 
     // 3.5 LocalWP: LocalWP is a local development environment for WordPress. It allows you to create and manage WordPress sites on your local machine without needing to set up a web server or database. LocalWP provides a user-friendly interface for creating and managing WordPress sites, making it easier for developers to work on their projects locally before deploying them to a live server.
+
+    // 3.6 XAMPP: XAMPP is a free and open-source cross-platform web server solution stack package, consisting primarily of the Apache HTTP Server, MariaDB database, and interpreters for scripts written in the PHP and Perl programming languages. It allows you to create a local server environment on your computer, enabling you to develop and test websites and web applications before deploying them to a live server. This is particularly useful for WordPress development, as it provides a convenient way to build and experiment with WordPress sites offline.
+
+    // 3.7 VVV: VVV (Varying Vagrant Vagrants) is an open-source development environment specifically designed for WordPress. It provides a pre-configured virtual machine that includes everything you need to develop WordPress themes, plugins, and even WordPress core itself. This allows developers to create a consistent and isolated environment, minimizing compatibility issues and streamlining the development process.
+
 }
