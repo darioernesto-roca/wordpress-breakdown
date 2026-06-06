@@ -41,4 +41,5 @@
 
     // 3.7 VVV: VVV (Varying Vagrant Vagrants) is an open-source development environment specifically designed for WordPress. It provides a pre-configured virtual machine that includes everything you need to develop WordPress themes, plugins, and even WordPress core itself. This allows developers to create a consistent and isolated environment, minimizing compatibility issues and streamlining the development process.
 
+    // 3.8 Docker for Local WordPress Development: Docker is a platform that uses containerization to package software with all its dependencies into standardized units for software development. This allows developers to create, deploy, and run applications in isolated environments called containers, ensuring consistency across different computing environments, from development to production. For WordPress, Docker simplifies setting up a local development environment by providing pre-configured containers with all the necessary components like web servers, databases, and PHP.
 }
