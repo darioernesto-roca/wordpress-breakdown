@@ -44,3 +44,12 @@
     // 3.8 Docker for Local WordPress Development: Docker is a platform that uses containerization to package software with all its dependencies into standardized units for software development. This allows developers to create, deploy, and run applications in isolated environments called containers, ensuring consistency across different computing environments, from development to production. For WordPress, Docker simplifies setting up a local development environment by providing pre-configured containers with all the necessary components like web servers, databases, and PHP.
     // For more information https://www.digitalocean.com/community/tutorials/how-to-install-wordpress-with-docker-compose
 }
+
+/* 
+    4. WordPress Concepts
+*/
+
+{
+    // 4.1 Themes: A theme is a collection of files that determine the look and feel of a WordPress website. It includes templates, stylesheets, and images that control the layout and design of the site. Themes can be customized to fit the specific needs of a website, and there are thousands of free and premium themes available for WordPress. Themes in WordPress control the overall design and appearance of your website. They dictate the layout, colors, fonts, and styles used to present your content to visitors. Think of them as pre-designed templates that you can customize to create a unique look for your site without needing to write code from scratch.
+
+}
