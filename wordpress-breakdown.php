@@ -58,4 +58,6 @@
 
      // 4.4 Child Themes: A child theme is a theme that inherits the functionality and styling of another theme, called the parent theme. Child themes allow users to make customizations to a website without modifying the parent theme's files, which can be useful for maintaining updates and ensuring compatibility with future versions of WordPress. By creating a child theme, you can safely customize your site while still benefiting from the features and updates of the parent theme.
 
+     // 4.5 Hybrid Themes: Hybrid themes in WordPress combine the best aspects of traditional themes and block themes. They allow developers to use both classic PHP templates and the block editor for different parts of their website, offering flexibility in design and development. However, they are not built to use the Site Editor. This approach enables a gradual transition to block-based theming while still leveraging existing theme structures and code.
+
 }
