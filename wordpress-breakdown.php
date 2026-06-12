@@ -62,4 +62,8 @@
 
      // 4.6 Third-Party: Third-party WordPress themes are pre-designed website templates created by developers or companies other than WordPress.org. These themes offer a wide range of designs and functionalities, allowing users to quickly customize the look and feel of their WordPress website without extensive coding knowledge. They are typically purchased or downloaded from independent marketplaces or theme developers' websites.
 
+     // 4.7 Plugins: WordPress plugins are like add-ons for your WordPress website. They are pieces of software that you can upload and install to extend the functionality of your site. Think of them as apps for your website, allowing you to add features like contact forms, e-commerce capabilities, SEO tools, social media integration, and much more, without needing to write any code yourself.
+
+     // WordPress File Structure: The WordPress file structure is the organized system of folders and files that make up a WordPress website. It includes core WordPress files, theme files, plugin files, and user-uploaded content, all working together to display your website's content and functionality. Understanding this structure is essential for troubleshooting, customizing, and managing your WordPress site effectively.
+
 }
