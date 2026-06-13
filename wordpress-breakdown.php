@@ -64,6 +64,8 @@
 
      // 4.7 Plugins: WordPress plugins are like add-ons for your WordPress website. They are pieces of software that you can upload and install to extend the functionality of your site. Think of them as apps for your website, allowing you to add features like contact forms, e-commerce capabilities, SEO tools, social media integration, and much more, without needing to write any code yourself.
 
-     // WordPress File Structure: The WordPress file structure is the organized system of folders and files that make up a WordPress website. It includes core WordPress files, theme files, plugin files, and user-uploaded content, all working together to display your website's content and functionality. Understanding this structure is essential for troubleshooting, customizing, and managing your WordPress site effectively.
+     // 4.8 WordPress File Structure: The WordPress file structure is the organized system of folders and files that make up a WordPress website. It includes core WordPress files, theme files, plugin files, and user-uploaded content, all working together to display your website's content and functionality. Understanding this structure is essential for troubleshooting, customizing, and managing your WordPress site effectively.
+
+     // 4.9 Page Editors: Page editors are tools that allow users to create and modify the content and layout of individual pages on a website through a visual interface. They simplify the process of web design and content creation by providing a user-friendly way to arrange elements like text, images, and other media without needing to write code. These editors often use a drag-and-drop interface, making it easy to build and customize pages to suit specific needs.
 
 }
