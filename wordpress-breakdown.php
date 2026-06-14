@@ -67,5 +67,18 @@
      // 4.8 WordPress File Structure: The WordPress file structure is the organized system of folders and files that make up a WordPress website. It includes core WordPress files, theme files, plugin files, and user-uploaded content, all working together to display your website's content and functionality. Understanding this structure is essential for troubleshooting, customizing, and managing your WordPress site effectively.
 
      // 4.9 Page Editors: Page editors are tools that allow users to create and modify the content and layout of individual pages on a website through a visual interface. They simplify the process of web design and content creation by providing a user-friendly way to arrange elements like text, images, and other media without needing to write code. These editors often use a drag-and-drop interface, making it easy to build and customize pages to suit specific needs.
+}
 
+/* 
+        5. Hooks
+*/
+
+{
+    // 5.1 Hooks: Hooks are a way for developers to modify the behavior of WordPress without changing the core code. They allow developers to add custom functionality to WordPress by "hooking" into specific points in the WordPress code. There are two types of hooks: actions and filters. Actions allow developers to execute custom code at specific points in the WordPress code, while filters allow developers to modify data before it is displayed on the website.
+
+    // 5.2 Actions: Actions are a type of hook that allows developers to execute custom code at specific points in the WordPress code. They are used to perform tasks such as adding new functionality, modifying existing functionality, or triggering events. For example, you can use an action hook to send an email notification when a new post is published.
+
+    // 5.3 Filters: Filters are a type of hook that allows developers to modify data before it is displayed on the website. They are used to change the output of WordPress functions, such as modifying the content of a post or changing the title of a page. For example, you can use a filter hook to add a custom message to the end of every post.
+
+     // 5.4 Custom Hooks: Custom hooks are user-defined hooks that allow developers to create their own actions and filters. They can be used to create custom functionality that is specific to a particular website or plugin. Custom hooks provide a way for developers to extend WordPress in unique ways that may not be covered by existing hooks.
 }
