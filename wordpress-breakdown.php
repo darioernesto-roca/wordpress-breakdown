@@ -78,6 +78,17 @@
 
     // 5.2 Actions: Actions are a type of hook that allows developers to execute custom code at specific points in the WordPress code. They are used to perform tasks such as adding new functionality, modifying existing functionality, or triggering events. For example, you can use an action hook to send an email notification when a new post is published.
 
+        // Examples of action hooks include 'init', which runs after WordPress has finished loading but before any headers are sent, and 'wp_footer', which runs just before the closing </body> tag in the theme. By using these hooks, developers can add custom code to enhance the functionality of their WordPress site without modifying core files, ensuring that updates to WordPress do not overwrite their customizations.
+
+        // Here's the most used actions in WordPress:
+        // 'init' - This action is triggered after WordPress has finished loading but before any
+        // headers are sent. It is commonly used to initialize plugins, register custom post types, and set up theme features.
+        // 'wp_enqueue_scripts' - This action is used to enqueue stylesheets and JavaScript
+        // files for the front-end of the website. It allows developers to properly load their assets and manage dependencies.
+        // 'admin_enqueue_scripts' - Similar to 'wp_enqueue_scripts', this action is used to enqueue stylesheets and JavaScript files for the WordPress admin area. It ensures that custom assets are loaded only in the admin interface, preventing unnecessary loading on the front-end.
+        // 'wp_footer' - This action is triggered just before the closing </body> tag
+        // in the theme. It is commonly used to add custom scripts or content that should appear at the end of the page, such as analytics tracking code or custom JavaScript.
+
     // 5.3 Filters: Filters are a type of hook that allows developers to modify data before it is displayed on the website. They are used to change the output of WordPress functions, such as modifying the content of a post or changing the title of a page. For example, you can use a filter hook to add a custom message to the end of every post.
 
      // 5.4 Custom Hooks: Custom hooks are user-defined hooks that allow developers to create their own actions and filters. They can be used to create custom functionality that is specific to a particular website or plugin. Custom hooks provide a way for developers to extend WordPress in unique ways that may not be covered by existing hooks.
