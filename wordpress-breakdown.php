@@ -91,6 +91,10 @@
 
     // 5.3 Filters: Filters are a type of hook that allows developers to modify data before it is displayed on the website. They are used to change the output of WordPress functions, such as modifying the content of a post or changing the title of a page. For example, you can use a filter hook to add a custom message to the end of every post.
 
+        // Here are some commonly used filter hooks in WordPress:
+        // 'the_content' - This filter allows developers to modify the content of a post before it is displayed on the front-end. It can be used to add custom formatting, insert additional content, or modify the existing content in various ways.
+        // 'the_title' - This filter allows developers to modify the title of a post or page before it is displayed. It can be used to add prefixes, suffixes, or completely change the title based on specific conditions.
+
      // 5.4 Custom Hooks: Custom hooks are user-defined hooks that allow developers to create their own actions and filters. They can be used to create custom functionality that is specific to a particular website or plugin. Custom hooks provide a way for developers to extend WordPress in unique ways that may not be covered by existing hooks.
 }
 
@@ -100,4 +104,5 @@
     // 6.1 The Loop: The Loop is a fundamental concept in WordPress that is used to display posts and pages on a website. It is a PHP code structure that retrieves and displays content from the WordPress database. The Loop is used in theme files to control how posts and pages are displayed on the front-end of a website.
 
     // The Loop works by checking if there are any posts or pages to display, and if so, it retrieves the content and displays it according to the specified template. The Loop can be customized to display different types of content, such as custom post types or specific categories, and it can also be used to control the layout and design of the content being displayed.
+    // The loop is a PHP code structure typically found in WordPress theme files. It checks if there are posts to display and iterates through them, outputting the content according to the theme's design. The loop can be customized with parameters to filter posts by category, tag, author, or other criteria, allowing developers to create dynamic and flexible content displays. Examples of loop functions include `have_posts()`, which checks if there are any posts to display, and `the_post()`, which sets up the post data for use in template tags. By using the loop, developers can create custom layouts and presentations for their WordPress content, enhancing the user experience on their websites. Those functions are usually located in the theme's template files, such as `index.php`, `single.php`, and `archive.php`, and can be modified to suit the specific needs of the website.
 }
