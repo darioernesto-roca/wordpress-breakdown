@@ -93,3 +93,11 @@
 
      // 5.4 Custom Hooks: Custom hooks are user-defined hooks that allow developers to create their own actions and filters. They can be used to create custom functionality that is specific to a particular website or plugin. Custom hooks provide a way for developers to extend WordPress in unique ways that may not be covered by existing hooks.
 }
+
+/* 6. The Loop */
+
+{
+    // 6.1 The Loop: The Loop is a fundamental concept in WordPress that is used to display posts and pages on a website. It is a PHP code structure that retrieves and displays content from the WordPress database. The Loop is used in theme files to control how posts and pages are displayed on the front-end of a website.
+
+    // The Loop works by checking if there are any posts or pages to display, and if so, it retrieves the content and displays it according to the specified template. The Loop can be customized to display different types of content, such as custom post types or specific categories, and it can also be used to control the layout and design of the content being displayed.
+}
