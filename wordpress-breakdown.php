@@ -2,7 +2,7 @@
 
 /*
 
-    1. WordPress Breakdown
+    1. WordPress Breakdow. Concepts and definitions
 
 */ {
     // 1.1 What is WordPress? - WordPress is a content management system (CMS) that allows users to create and manage websites without needing to know how to code. It is open-source software that is free to use and has a large community of developers who contribute to its development and support.
