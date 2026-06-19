@@ -2,7 +2,7 @@
 
 /*
 
-    1. WordPress Breakdow. Concepts and definitions
+    1. WordPress Breakdow. Concepts and definitions.
 
 */ {
     // 1.1 What is WordPress? - WordPress is a content management system (CMS) that allows users to create and manage websites without needing to know how to code. It is open-source software that is free to use and has a large community of developers who contribute to its development and support.
@@ -105,4 +105,12 @@
 
     // The Loop works by checking if there are any posts or pages to display, and if so, it retrieves the content and displays it according to the specified template. The Loop can be customized to display different types of content, such as custom post types or specific categories, and it can also be used to control the layout and design of the content being displayed.
     // The loop is a PHP code structure typically found in WordPress theme files. It checks if there are posts to display and iterates through them, outputting the content according to the theme's design. The loop can be customized with parameters to filter posts by category, tag, author, or other criteria, allowing developers to create dynamic and flexible content displays. Examples of loop functions include `have_posts()`, which checks if there are any posts to display, and `the_post()`, which sets up the post data for use in template tags. By using the loop, developers can create custom layouts and presentations for their WordPress content, enhancing the user experience on their websites. Those functions are usually located in the theme's template files, such as `index.php`, `single.php`, and `archive.php`, and can be modified to suit the specific needs of the website.
+    // The Loop is PHP code used by WordPress to display posts. Using The Loop, WordPress processes each post to be displayed on the current page, and formats it according to how it matches specified criteria within The Loop tags. Any HTML or PHP code in the Loop will be processed on each post.
+
+// When WordPress documentation says "This tag must be within The Loop", such as for specific Template Tags or plugins, the tag will be repeated for each post. For example, The Loop displays the following information by default for each post:
+
+// Title (the_title())
+// Time (the_time())
+// Categories (the_category()).
+// You can display other information about each post using the appropriate Template Tags or (for advanced users) by accessing the $post variable, which is set with the current post's information while The Loop is running.
 }
