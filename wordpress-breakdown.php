@@ -132,3 +132,11 @@
 {
     // Style and script enqueueing is the proper way to add CSS stylesheets and JavaScript files to your WordPress website. Instead of directly adding code to your theme's header or footer, enqueueing uses WordPress functions to register and load these assets in a controlled and organized manner. This ensures compatibility, avoids conflicts with other plugins and themes, and allows for dependency management.
 }
+
+/* 9. Custom Post Types */
+
+{
+    // Custom Post Types allow you to create different types of content beyond the standard posts and pages. Think of them as a way to organize and manage specific kinds of information on your website, like products, events, or testimonials, each with its own unique set of fields and display options. This helps you structure your website's content in a more meaningful and organized way.
+
+    // Custom Post Types in WordPress are a powerful feature that allows developers to create and manage different types of content beyond the default posts and pages. By registering a custom post type, you can define specific attributes, such as custom fields, taxonomies, and templates, that are tailored to the unique needs of your content. This enables you to organize and display your content in a more structured and meaningful way, enhancing the user experience on your website. For example, if you're running an online store, you could create a custom post type for products, allowing you to manage product information separately from regular blog posts or pages. This flexibility is one of the key reasons why WordPress is such a popular choice for building websites of all kinds.
+}
