@@ -1215,3 +1215,1094 @@ fetch('/wp-admin/admin-ajax.php', {
  */
 
 /* End of WordPress Breakdown with Examples */
+
+/* ========================================================================== */
+/* 18. WORDPRESS REST API                                                     */
+/* ========================================================================== */
+
+/**
+ * The WordPress REST API is an interface that allows other applications,
+ * websites, mobile apps, JavaScript frontends, and external services to
+ * communicate with a WordPress site.
+ *
+ * In simple terms:
+ *
+ * The REST API lets WordPress send and receive data using URLs.
+ *
+ * Instead of only using the WordPress admin dashboard to manage content,
+ * developers can use HTTP requests to read, create, update, or delete data.
+ *
+ * The REST API uses common HTTP methods:
+ *
+ * GET    = Read data
+ * POST   = Create new data
+ * PUT    = Replace/update existing data
+ * PATCH  = Partially update existing data
+ * DELETE = Delete data
+ *
+ * WordPress exposes REST API endpoints under this base URL:
+ *
+ * https://example.com/wp-json/
+ *
+ * A common endpoint for posts is:
+ *
+ * https://example.com/wp-json/wp/v2/posts
+ *
+ * A common endpoint for pages is:
+ *
+ * https://example.com/wp-json/wp/v2/pages
+ *
+ * A common endpoint for users is:
+ *
+ * https://example.com/wp-json/wp/v2/users
+ *
+ * A common endpoint for media files is:
+ *
+ * https://example.com/wp-json/wp/v2/media
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 18.1 BASIC REAL-LIFE USE CASE                                              */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Real-life example:
+ *
+ * Imagine a WordPress website that has blog posts, but you want to display
+ * those blog posts inside a separate React, Vue, Next.js, or mobile app.
+ *
+ * Instead of manually copying the posts, the external app can request them
+ * from WordPress using the REST API.
+ *
+ * Example request:
+ *
+ * GET https://example.com/wp-json/wp/v2/posts
+ *
+ * WordPress responds with JSON data.
+ *
+ * JSON means JavaScript Object Notation. It is a common format used to
+ * exchange data between systems.
+ *
+ * Example simplified JSON response:
+ *
+ * [
+ *   {
+ *     "id": 10,
+ *     "date": "2026-06-24T10:00:00",
+ *     "slug": "my-first-post",
+ *     "title": {
+ *       "rendered": "My First Post"
+ *     },
+ *     "content": {
+ *       "rendered": "<p>This is the post content.</p>"
+ *     }
+ *   }
+ * ]
+ *
+ * A frontend app can then take this data and display it however it wants.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 18.2 COMMON WORDPRESS REST API ENDPOINTS                                   */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Some common default WordPress REST API endpoints:
+ *
+ * Posts:
+ * https://example.com/wp-json/wp/v2/posts
+ *
+ * Single post by ID:
+ * https://example.com/wp-json/wp/v2/posts/10
+ *
+ * Pages:
+ * https://example.com/wp-json/wp/v2/pages
+ *
+ * Single page by ID:
+ * https://example.com/wp-json/wp/v2/pages/25
+ *
+ * Categories:
+ * https://example.com/wp-json/wp/v2/categories
+ *
+ * Tags:
+ * https://example.com/wp-json/wp/v2/tags
+ *
+ * Media:
+ * https://example.com/wp-json/wp/v2/media
+ *
+ * Users:
+ * https://example.com/wp-json/wp/v2/users
+ *
+ * Comments:
+ * https://example.com/wp-json/wp/v2/comments
+ *
+ * Search:
+ * https://example.com/wp-json/wp/v2/search?search=wordpress
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 18.3 EXAMPLE: FETCH POSTS WITH JAVASCRIPT                                  */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Real-life use case:
+ *
+ * You are building a custom frontend with JavaScript and you want to display
+ * the latest blog posts from WordPress.
+ *
+ * This could be used in:
+ *
+ * - A React app
+ * - A Vue app
+ * - A static landing page
+ * - A custom dashboard
+ * - A mobile app using a web view
+ */
+
+/*
+?>
+
+<script>
+fetch('https://example.com/wp-json/wp/v2/posts')
+    .then(response => response.json())
+    .then(posts => {
+        console.log(posts);
+
+        posts.forEach(post => {
+            console.log(post.title.rendered);
+            console.log(post.link);
+        });
+    })
+    .catch(error => {
+        console.error('Error fetching posts:', error);
+    });
+</script>
+
+<?php
+*/
+
+/* -------------------------------------------------------------------------- */
+/* 18.4 EXAMPLE: FETCH POSTS WITH PHP                                         */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Real-life use case:
+ *
+ * You have one WordPress site and you want to show posts from another
+ * WordPress site.
+ *
+ * Example:
+ *
+ * Site A is the company website.
+ * Site B is the company blog.
+ *
+ * You want to display the latest blog posts from Site B on Site A.
+ */
+
+/*
+$response = wp_remote_get('https://example.com/wp-json/wp/v2/posts');
+
+if (!is_wp_error($response)) {
+    $body = wp_remote_retrieve_body($response);
+    $posts = json_decode($body);
+
+    if (!empty($posts)) {
+        foreach ($posts as $post) {
+            echo '<h2>' . esc_html($post->title->rendered) . '</h2>';
+            echo '<a href="' . esc_url($post->link) . '">Read more</a>';
+        }
+    }
+}
+*/
+
+/* -------------------------------------------------------------------------- */
+/* 18.5 EXAMPLE: LIMIT THE NUMBER OF POSTS                                    */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * By default, WordPress may return several posts.
+ *
+ * You can use query parameters to control the response.
+ *
+ * Example:
+ *
+ * Get only 3 posts:
+ *
+ * https://example.com/wp-json/wp/v2/posts?per_page=3
+ *
+ * Get posts from category ID 5:
+ *
+ * https://example.com/wp-json/wp/v2/posts?categories=5
+ *
+ * Search posts containing the word "seo":
+ *
+ * https://example.com/wp-json/wp/v2/posts?search=seo
+ *
+ * Order posts by newest first:
+ *
+ * https://example.com/wp-json/wp/v2/posts?orderby=date&order=desc
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 18.6 EXAMPLE: HEADLESS WORDPRESS                                           */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Headless WordPress means WordPress is used only as the backend/CMS,
+ * while the frontend is built with another technology.
+ *
+ * Traditional WordPress:
+ *
+ * WordPress Admin + WordPress Theme + WordPress Frontend
+ *
+ * Headless WordPress:
+ *
+ * WordPress Admin + REST API + Custom Frontend
+ *
+ * Example frontend technologies:
+ *
+ * - React
+ * - Next.js
+ * - Vue
+ * - Nuxt
+ * - Angular
+ * - Astro
+ * - Mobile apps
+ *
+ * Real-life use case:
+ *
+ * A marketing team wants to keep using WordPress because they already know
+ * how to write and edit content there.
+ *
+ * But the development team wants a custom frontend built with Next.js for
+ * better performance, custom routing, and a modern user experience.
+ *
+ * In that case:
+ *
+ * - Editors create posts in WordPress.
+ * - Next.js fetches the content through the REST API.
+ * - Visitors see the Next.js frontend, not a normal WordPress theme.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 18.7 EXAMPLE: CREATE A CUSTOM REST API ENDPOINT                            */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * WordPress allows developers to create custom REST API endpoints.
+ *
+ * Real-life use case:
+ *
+ * You have a custom post type called "case_study" and you want to expose
+ * a simplified endpoint that returns only the fields needed by the frontend.
+ *
+ * Example endpoint:
+ *
+ * https://example.com/wp-json/rocadev/v1/case-studies
+ *
+ * This is useful when the default WordPress REST API response contains too
+ * much data or when you want to control exactly what is returned.
+ */
+
+/*
+add_action('rest_api_init', 'rocadev_register_case_studies_endpoint');
+
+function rocadev_register_case_studies_endpoint() {
+    register_rest_route('rocadev/v1', '/case-studies', [
+        'methods'  => 'GET',
+        'callback' => 'rocadev_get_case_studies',
+        'permission_callback' => '__return_true',
+    ]);
+}
+
+function rocadev_get_case_studies() {
+    $query = new WP_Query([
+        'post_type'      => 'case_study',
+        'posts_per_page' => 10,
+        'post_status'    => 'publish',
+    ]);
+
+    $results = [];
+
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
+
+            $results[] = [
+                'id'        => get_the_ID(),
+                'title'     => get_the_title(),
+                'excerpt'   => get_the_excerpt(),
+                'permalink' => get_permalink(),
+                'image'     => get_the_post_thumbnail_url(get_the_ID(), 'medium'),
+            ];
+        }
+
+        wp_reset_postdata();
+    }
+
+    return rest_ensure_response($results);
+}
+*/
+
+/* -------------------------------------------------------------------------- */
+/* 18.8 EXAMPLE: CUSTOM ENDPOINT WITH PARAMETERS                              */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Real-life use case:
+ *
+ * You want an endpoint that returns case studies filtered by industry.
+ *
+ * Example:
+ *
+ * https://example.com/wp-json/rocadev/v1/case-studies?industry=healthcare
+ *
+ * This could be useful for:
+ *
+ * - Filtering case studies
+ * - Building frontend search
+ * - Creating dynamic landing pages
+ * - Connecting WordPress to another application
+ */
+
+/*
+add_action('rest_api_init', 'rocadev_register_filtered_case_studies_endpoint');
+
+function rocadev_register_filtered_case_studies_endpoint() {
+    register_rest_route('rocadev/v1', '/filtered-case-studies', [
+        'methods'  => 'GET',
+        'callback' => 'rocadev_get_filtered_case_studies',
+        'permission_callback' => '__return_true',
+        'args' => [
+            'industry' => [
+                'required' => false,
+                'sanitize_callback' => 'sanitize_text_field',
+            ],
+        ],
+    ]);
+}
+
+function rocadev_get_filtered_case_studies($request) {
+    $industry = $request->get_param('industry');
+
+    $args = [
+        'post_type'      => 'case_study',
+        'posts_per_page' => 10,
+        'post_status'    => 'publish',
+    ];
+
+    if (!empty($industry)) {
+        $args['tax_query'] = [
+            [
+                'taxonomy' => 'industry',
+                'field'    => 'slug',
+                'terms'    => $industry,
+            ],
+        ];
+    }
+
+    $query = new WP_Query($args);
+
+    $results = [];
+
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
+
+            $results[] = [
+                'title'     => get_the_title(),
+                'permalink' => get_permalink(),
+            ];
+        }
+
+        wp_reset_postdata();
+    }
+
+    return rest_ensure_response($results);
+}
+*/
+
+/* -------------------------------------------------------------------------- */
+/* 18.9 AUTHENTICATION                                                        */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Public REST API requests usually do not need authentication.
+ *
+ * Example:
+ *
+ * Reading published posts is usually public:
+ *
+ * GET https://example.com/wp-json/wp/v2/posts
+ *
+ * But creating, updating, or deleting content usually requires authentication.
+ *
+ * Example:
+ *
+ * Creating a post:
+ *
+ * POST https://example.com/wp-json/wp/v2/posts
+ *
+ * Updating a post:
+ *
+ * PUT https://example.com/wp-json/wp/v2/posts/10
+ *
+ * Deleting a post:
+ *
+ * DELETE https://example.com/wp-json/wp/v2/posts/10
+ *
+ * These actions should only be available to authorized users.
+ *
+ * Common authentication methods:
+ *
+ * - WordPress cookies and nonces, usually inside WordPress admin.
+ * - Application Passwords.
+ * - OAuth, usually in more complex integrations.
+ * - JWT, commonly used in headless setups with plugins.
+ *
+ * Real-life use case:
+ *
+ * A mobile app lets an authenticated editor create blog posts from their phone.
+ * The app sends the post title and content to WordPress using the REST API.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 18.10 EXAMPLE: CREATE A POST WITH THE REST API                             */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * This example is only conceptual.
+ *
+ * To actually create a post, the request must be authenticated.
+ *
+ * Example request:
+ *
+ * POST https://example.com/wp-json/wp/v2/posts
+ *
+ * Body:
+ *
+ * {
+ *   "title": "New Post from External App",
+ *   "content": "This post was created using the REST API.",
+ *   "status": "publish"
+ * }
+ *
+ * Real-life use case:
+ *
+ * A custom CRM automatically creates a private WordPress post every time
+ * a new customer case is created.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 18.11 EXAMPLE: APPLICATION PASSWORDS                                       */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Application Passwords allow external applications to authenticate with
+ * WordPress without using the user's normal password directly.
+ *
+ * Real-life use case:
+ *
+ * You connect a third-party automation tool to WordPress so it can create
+ * draft posts automatically.
+ *
+ * Example with cURL:
+ *
+ * curl --user "username:application-password" \
+ *      -X POST https://example.com/wp-json/wp/v2/posts \
+ *      -H "Content-Type: application/json" \
+ *      -d '{
+ *            "title": "Post created from cURL",
+ *            "content": "This content was sent through the REST API.",
+ *            "status": "draft"
+ *          }'
+ *
+ * Important:
+ *
+ * Application passwords should be treated like real passwords.
+ * Do not commit them to GitHub.
+ * Do not expose them in frontend JavaScript.
+ * Revoke them when they are no longer needed.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 18.12 NONCES IN WORDPRESS REST API                                         */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * A nonce is a security token used by WordPress to verify that a request
+ * comes from a valid source.
+ *
+ * In WordPress admin or frontend logged-in experiences, REST API requests
+ * often use a nonce.
+ *
+ * Real-life use case:
+ *
+ * You build a frontend button that lets a logged-in user save a favorite post.
+ *
+ * The JavaScript sends a REST API request.
+ * WordPress checks the nonce before allowing the action.
+ */
+
+/*
+wp_localize_script('custom-script', 'rocadevApi', [
+    'root'  => esc_url_raw(rest_url()),
+    'nonce' => wp_create_nonce('wp_rest'),
+]);
+
+?>
+
+<script>
+fetch(rocadevApi.root + 'rocadev/v1/favorite-post', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-WP-Nonce': rocadevApi.nonce
+    },
+    body: JSON.stringify({
+        post_id: 123
+    })
+});
+</script>
+
+<?php
+*/
+
+/* -------------------------------------------------------------------------- */
+/* 18.13 PERMISSION CALLBACK                                                  */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Every custom REST API route should define a permission_callback.
+ *
+ * This controls who can access the endpoint.
+ *
+ * Public endpoint:
+ */
+
+// 'permission_callback' => '__return_true';
+
+/**
+ * The example above means anyone can access the endpoint.
+ *
+ * That is acceptable for public data like published posts, public case studies,
+ * public testimonials, or public products.
+ *
+ * Private endpoint example:
+ */
+/*
+'permission_callback' => function () {
+    return current_user_can('manage_options');
+};
+*/
+
+/**
+ * The example above means only admins can access the endpoint.
+ *
+ * Real-life use case:
+ *
+ * You create an endpoint that returns internal lead data from a contact form.
+ * That endpoint should not be public.
+ *
+ * It should check permissions before returning any data.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 18.14 SECURITY CONSIDERATIONS                                              */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Important security rules when working with the REST API:
+ *
+ * 1. Do not expose sensitive data publicly.
+ *
+ * Bad example:
+ *
+ * Returning customer emails, phone numbers, order data, private notes,
+ * API keys, or user personal information from a public endpoint.
+ *
+ * 2. Always sanitize input.
+ *
+ * If an endpoint receives data from a request, clean it before using it.
+ */
+
+// $search = sanitize_text_field($request->get_param('search'));
+
+/**
+ * 3. Always escape output when rendering data in HTML.
+ */
+
+// echo esc_html($title);
+// echo esc_url($url);
+
+/**
+ * 4. Use permission_callback correctly.
+ *
+ * Do not use __return_true for private data.
+ *
+ * 5. Avoid exposing usernames unnecessarily.
+ *
+ * Some WordPress REST API user endpoints can reveal public user information.
+ * Depending on the project, this may be acceptable or may need to be restricted.
+ *
+ * 6. Never expose secrets in JavaScript.
+ *
+ * API keys, application passwords, private tokens, and server credentials
+ * should never be placed in frontend code.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 18.15 REST API AND CUSTOM POST TYPES                                       */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Custom Post Types can be exposed in the REST API by setting:
+ *
+ * 'show_in_rest' => true
+ *
+ * Real-life use case:
+ *
+ * You create a "Projects" custom post type and want Gutenberg, the REST API,
+ * or a React frontend to access it.
+ */
+
+/*
+
+add_action('init', 'rocadev_register_project_post_type');
+
+function rocadev_register_project_post_type() {
+    register_post_type('project', [
+        'label'        => 'Projects',
+        'public'       => true,
+        'show_in_rest' => true,
+        'supports'     => ['title', 'editor', 'thumbnail', 'excerpt'],
+        'rewrite'      => ['slug' => 'projects'],
+    ]);
+}
+*/
+
+/**
+ * After this, WordPress creates a REST API endpoint like:
+ *
+ * https://example.com/wp-json/wp/v2/project
+ *
+ * In some cases, the endpoint may use the REST base configured for the
+ * post type.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 18.16 REST API AND ACF                                                     */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * ACF means Advanced Custom Fields.
+ *
+ * ACF is commonly used to add custom fields to posts, pages, and custom
+ * post types.
+ *
+ * Real-life use case:
+ *
+ * A Case Study has fields like:
+ *
+ * - Client name
+ * - Industry
+ * - Monthly ad spend
+ * - Results
+ * - Testimonial
+ *
+ * These fields can be exposed through the REST API, depending on ACF settings.
+ *
+ * Example conceptual JSON response:
+ *
+ * {
+ *   "title": {
+ *     "rendered": "Dental Clinic Case Study"
+ *   },
+ *   "acf": {
+ *     "client_name": "ABC Dental",
+ *     "industry": "Healthcare",
+ *     "result": "42% increase in leads"
+ *   }
+ * }
+ *
+ * This is useful for a headless frontend that needs structured content.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 18.17 EXAMPLE: MODIFY REST API RESPONSE                                    */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Developers can add extra fields to REST API responses.
+ *
+ * Real-life use case:
+ *
+ * By default, the posts endpoint may not return the featured image URL in
+ * the exact format you want.
+ *
+ * You can register a custom field called featured_image_url.
+ */
+
+/*
+add_action('rest_api_init', 'rocadev_add_featured_image_to_posts_api');
+
+function rocadev_add_featured_image_to_posts_api() {
+    register_rest_field('post', 'featured_image_url', [
+        'get_callback' => 'rocadev_get_featured_image_url',
+        'schema' => [
+            'description' => 'Featured image URL',
+            'type'        => 'string',
+            'context'     => ['view', 'edit'],
+        ],
+    ]);
+}
+
+function rocadev_get_featured_image_url($object) {
+    $post_id = $object['id'];
+
+    $image_url = get_the_post_thumbnail_url($post_id, 'large');
+
+    return $image_url ? $image_url : '';
+}
+*/
+
+/**
+ * After this, each post response can include:
+ *
+ * {
+ *   "id": 10,
+ *   "title": {
+ *     "rendered": "Example Post"
+ *   },
+ *   "featured_image_url": "https://example.com/image.jpg"
+ * }
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 18.18 EXAMPLE: DISABLE OR RESTRICT REST API ACCESS                         */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * In some projects, you may want to restrict certain REST API endpoints.
+ *
+ * Real-life use case:
+ *
+ * A security audit recommends limiting public access to user data.
+ *
+ * Example: restrict user endpoint access to logged-in users only.
+ */
+
+/*
+add_filter('rest_endpoints', 'rocadev_restrict_users_endpoint');
+
+function rocadev_restrict_users_endpoint($endpoints) {
+    if (!is_user_logged_in()) {
+        unset($endpoints['/wp/v2/users']);
+        unset($endpoints['/wp/v2/users/(?P<id>[\d]+)']);
+    }
+
+    return $endpoints;
+}
+*/
+
+/**
+ * Important:
+ *
+ * Be careful when disabling REST API endpoints.
+ * Some plugins, themes, Gutenberg, WooCommerce, and admin features may rely
+ * on the REST API.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 18.19 REST API WITH WOOCOMMERCE                                            */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * WooCommerce has its own REST API.
+ *
+ * Real-life use cases:
+ *
+ * - Connect WooCommerce to an external inventory system.
+ * - Send orders to a shipping provider.
+ * - Sync products with a marketplace.
+ * - Build a mobile app for customers.
+ * - Build a custom admin dashboard for sales reports.
+ *
+ * Example conceptual endpoint:
+ *
+ * https://example.com/wp-json/wc/v3/products
+ *
+ * Example:
+ *
+ * An external warehouse system checks WooCommerce orders every 10 minutes.
+ * When a new paid order appears, the warehouse system prepares the shipment.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 18.20 REST API VS AJAX IN WORDPRESS                                        */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * WordPress historically used admin-ajax.php for many AJAX requests.
+ *
+ * REST API is now often preferred for structured application-like requests.
+ *
+ * AJAX example:
+ *
+ * https://example.com/wp-admin/admin-ajax.php
+ *
+ * REST API example:
+ *
+ * https://example.com/wp-json/rocadev/v1/search
+ *
+ * Real-life comparison:
+ *
+ * AJAX can be fine for small legacy features.
+ *
+ * REST API is usually better when:
+ *
+ * - You are building a structured frontend app.
+ * - You need clean URLs.
+ * - You want predictable JSON responses.
+ * - You are integrating with external systems.
+ * - You need custom endpoints.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 18.21 PRACTICAL EXAMPLE: CUSTOM SEARCH ENDPOINT                            */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Real-life use case:
+ *
+ * You are building a custom live search component.
+ *
+ * Instead of loading a full WordPress page, JavaScript sends the search term
+ * to a REST API endpoint and receives matching posts as JSON.
+ */
+
+/*
+
+add_action('rest_api_init', 'rocadev_register_search_endpoint');
+
+function rocadev_register_search_endpoint() {
+    register_rest_route('rocadev/v1', '/search', [
+        'methods'  => 'GET',
+        'callback' => 'rocadev_rest_search',
+        'permission_callback' => '__return_true',
+        'args' => [
+            'term' => [
+                'required' => true,
+                'sanitize_callback' => 'sanitize_text_field',
+            ],
+        ],
+    ]);
+}
+
+function rocadev_rest_search($request) {
+    $term = $request->get_param('term');
+
+    $query = new WP_Query([
+        'post_type'      => ['post', 'page'],
+        'posts_per_page' => 5,
+        's'              => $term,
+        'post_status'    => 'publish',
+    ]);
+
+    $results = [];
+
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
+
+            $results[] = [
+                'title' => get_the_title(),
+                'url'   => get_permalink(),
+                'type'  => get_post_type(),
+            ];
+        }
+
+        wp_reset_postdata();
+    }
+
+    return rest_ensure_response($results);
+}
+
+*/
+
+
+/* -------------------------------------------------------------------------- */
+/* 18.22 FRONTEND JAVASCRIPT FOR CUSTOM SEARCH                                */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * This is a conceptual JavaScript example for consuming the search endpoint.
+ */
+
+/*
+?>
+
+<input type="search" id="site-search" placeholder="Search..." />
+<div id="search-results"></div>
+
+<script>
+const input = document.getElementById('site-search');
+const resultsContainer = document.getElementById('search-results');
+
+input.addEventListener('input', function () {
+    const term = input.value.trim();
+
+    if (term.length < 3) {
+        resultsContainer.innerHTML = '';
+        return;
+    }
+
+    fetch('/wp-json/rocadev/v1/search?term=' + encodeURIComponent(term))
+        .then(response => response.json())
+        .then(results => {
+            resultsContainer.innerHTML = '';
+
+            results.forEach(item => {
+                const link = document.createElement('a');
+                link.href = item.url;
+                link.textContent = item.title;
+
+                resultsContainer.appendChild(link);
+                resultsContainer.appendChild(document.createElement('br'));
+            });
+        });
+});
+</script>
+
+<?php
+
+*/
+
+/* -------------------------------------------------------------------------- */
+/* 18.23 PERFORMANCE CONSIDERATIONS                                           */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * REST API endpoints can affect performance if they are not designed well.
+ *
+ * Common problems:
+ *
+ * - Returning too much data.
+ * - Running heavy database queries.
+ * - Not limiting posts_per_page.
+ * - Not caching expensive responses.
+ * - Calling the API too many times from the frontend.
+ *
+ * Real-life example:
+ *
+ * Bad:
+ *
+ * A homepage calls 15 different REST API endpoints on page load.
+ *
+ * Better:
+ *
+ * Create one optimized endpoint that returns only the data needed by the
+ * homepage.
+ *
+ * Example:
+ *
+ * /wp-json/rocadev/v1/homepage-data
+ *
+ * This endpoint could return:
+ *
+ * - Hero content
+ * - Latest 3 posts
+ * - Featured case studies
+ * - Testimonials
+ *
+ * in one single request.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 18.24 DEBUGGING REST API                                                   */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Ways to test or debug REST API endpoints:
+ *
+ * 1. Browser
+ *
+ * Open a GET endpoint directly:
+ *
+ * https://example.com/wp-json/wp/v2/posts
+ *
+ * 2. Postman or Insomnia
+ *
+ * Useful for testing GET, POST, PUT, PATCH, and DELETE requests.
+ *
+ * 3. cURL
+ *
+ * Example:
+ *
+ * curl https://example.com/wp-json/wp/v2/posts
+ *
+ * 4. Browser DevTools
+ *
+ * Open the Network tab and check REST API requests.
+ *
+ * Useful when debugging Gutenberg, WooCommerce blocks, or custom JavaScript.
+ *
+ * 5. WordPress debug log
+ *
+ * Use error_log() inside callbacks during development.
+ */
+
+// error_log('REST API endpoint was called');
+
+
+/* -------------------------------------------------------------------------- */
+/* 18.25 SUMMARY                                                              */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * The WordPress REST API is important because it allows WordPress to work
+ * as more than a traditional website builder.
+ *
+ * It allows WordPress to become a content hub that can communicate with:
+ *
+ * - JavaScript applications
+ * - Mobile apps
+ * - CRMs
+ * - ERPs
+ * - Marketing platforms
+ * - Automation tools
+ * - External dashboards
+ * - E-commerce systems
+ *
+ * Simple practical examples:
+ *
+ * 1. Display WordPress posts in a React app.
+ * 2. Send WooCommerce orders to a warehouse system.
+ * 3. Create posts from an external CRM.
+ * 4. Build a mobile app powered by WordPress content.
+ * 5. Build a custom live search feature.
+ * 6. Create a headless WordPress site.
+ * 7. Expose custom post types like Projects, Events, Properties, or Case Studies.
+ * 8. Connect WordPress with marketing tools or reporting dashboards.
+ *
+ * In short:
+ *
+ * The REST API is the bridge between WordPress and other applications.
+ */
