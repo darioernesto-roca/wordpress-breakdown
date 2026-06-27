@@ -2306,3 +2306,235 @@ input.addEventListener('input', function () {
  *
  * The REST API is the bridge between WordPress and other applications.
  */
+
+
+/* ========================================================================== */
+/* 19. WORDPRESS CODING STANDARDS                                             */
+/* ========================================================================== */
+
+/**
+ * WordPress Coding Standards are a set of guidelines and best practices for
+ * writing code that is consistent, readable, and maintainable within the
+ * WordPress ecosystem.
+ *
+ * These standards cover several languages used across WordPress:
+ * - PHP
+ * - HTML
+ * - CSS
+ * - JavaScript
+ *
+ * The goal is to make code easy to understand, debug, and collaborate on,
+ * regardless of who wrote it. When every theme, plugin, and core contribution
+ * follows the same rules, a developer can open an unfamiliar file and still
+ * read it comfortably, because the formatting and naming feel familiar.
+ *
+ * Why coding standards matter in practice:
+ * - Consistency: every file "looks the same", so the team reads code faster.
+ * - Readability: clear naming and spacing reduce misunderstandings.
+ * - Maintainability: future developers (including your future self) can change
+ *   the code safely.
+ * - Collaboration: pull requests focus on logic, not on style arguments.
+ * - Security: many standards (escaping, sanitizing, nonces) directly prevent
+ *   common vulnerabilities.
+ * - Fewer bugs: predictable patterns make mistakes easier to spot in review.
+ *
+ * Where the official standards live:
+ * - The WordPress Developer Handbook documents the standards for PHP, HTML,
+ *   CSS, JavaScript, and inline documentation.
+ * - Historically, the WordPress core uses tabs for indentation (not spaces),
+ *   Yoda conditions, and snake_case function names, which differ from many
+ *   other PHP projects (such as PSR-12 / Laravel style).
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 19.1 THE FOUR STANDARD AREAS                                               */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * 1. PHP Coding Standards
+ *    - Indent with tabs, not spaces.
+ *    - Use snake_case for functions and variables: get_user_orders().
+ *    - Use UPPER_SNAKE_CASE for constants: MY_PLUGIN_VERSION.
+ *    - Always use full <?php ?> tags, never short tags like <? ?>.
+ *    - Use Yoda conditions: if ( true === $is_active ) to avoid accidental
+ *      assignment ( = ) instead of comparison ( == ).
+ *    - Add spaces inside parentheses and around operators:
+ *      foreach ( $items as $item ) { ... }
+ *    - Escape on output, sanitize on input, and verify with nonces.
+ *
+ * 2. HTML Coding Standards
+ *    - Use valid, well-formed markup.
+ *    - Close all tags properly and use lowercase element/attribute names.
+ *    - Indentation should reflect the nesting level.
+ *
+ * 3. CSS Coding Standards
+ *    - One selector per line, lowercase hyphenated class names: .main-header.
+ *    - A space before the opening brace and a semicolon after every value.
+ *    - Group and comment sections so large stylesheets stay navigable.
+ *
+ * 4. JavaScript Coding Standards
+ *    - Consistent spacing, semicolons, and camelCase variable names.
+ *    - Prefer clear, descriptive names over abbreviations.
+ *    - Avoid leaking variables into the global scope.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 19.2 PHP NAMING AND STRUCTURE EXAMPLES                                     */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Bad example (inconsistent, hard to maintain):
+ */
+/*
+function GetUserOrders($ID){
+$x=get_post_meta($ID,'orders',true);
+if($x==''){return false;}
+return $x;
+}
+*/
+
+/**
+ * Better example following WordPress standards:
+ */
+/*
+function rocadev_get_user_orders( $user_id ) {
+    $orders = get_user_meta( $user_id, 'orders', true );
+
+    if ( '' === $orders ) {
+        return false;
+    }
+
+    return $orders;
+}
+*/
+
+/**
+ * Notes on the improved version:
+ * - Prefixed function name (rocadev_) avoids collisions with other plugins.
+ * - snake_case naming.
+ * - Spaces inside parentheses and around operators.
+ * - Yoda condition: '' === $orders.
+ * - Clear, descriptive variable names.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 19.3 SECURITY-RELATED STANDARDS: ESCAPE, SANITIZE, VALIDATE                */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * A large part of WordPress coding standards is about handling data safely.
+ *
+ * Rule of thumb:
+ * - Sanitize INPUT (data coming in).
+ * - Validate INPUT (confirm it is the shape you expect).
+ * - Escape OUTPUT (data going out to the browser).
+ *
+ * Common sanitizing functions:
+ * - sanitize_text_field()
+ * - sanitize_email()
+ * - absint()
+ * - wp_kses_post()
+ *
+ * Common escaping functions:
+ * - esc_html()
+ * - esc_attr()
+ * - esc_url()
+ * - esc_js()
+ */
+
+/*
+$raw_name  = isset( $_POST['name'] ) ? $_POST['name'] : '';
+$safe_name = sanitize_text_field( $raw_name );
+
+echo '<p>Hello, ' . esc_html( $safe_name ) . '</p>';
+*/
+
+
+/* -------------------------------------------------------------------------- */
+/* 19.4 TOOLS THAT ENFORCE THE STANDARDS                                      */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * You do not have to check every rule by hand. Tools can do it automatically.
+ *
+ * PHP_CodeSniffer (PHPCS) with WordPress Coding Standards (WPCS):
+ * - PHPCS scans PHP files and reports violations.
+ * - WPCS is a ruleset for PHPCS that knows the WordPress rules specifically.
+ *
+ * Typical setup uses Composer:
+ *
+ *   composer require --dev wp-coding-standards/wpcs
+ *
+ * Then run:
+ *
+ *   phpcs --standard=WordPress path/to/your/plugin
+ *
+ * And auto-fix what can be fixed automatically:
+ *
+ *   phpcbf --standard=WordPress path/to/your/plugin
+ *
+ * For JavaScript and CSS:
+ * - ESLint and the @wordpress/eslint-plugin enforce JS standards.
+ * - Stylelint with @wordpress/stylelint-config enforces CSS standards.
+ *
+ * Many of these are bundled in @wordpress/scripts, the official build tooling.
+ *
+ * Real-life use case:
+ * Before opening a pull request, you run phpcbf to auto-format, then phpcs to
+ * confirm there are no remaining issues. Reviewers can then focus on logic
+ * instead of spacing, naming, and indentation.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 19.5 INLINE DOCUMENTATION (PHPDoc) STANDARDS                               */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * WordPress also defines how to document code using DocBlocks.
+ * Functions, classes, and hooks should describe what they do, their parameters,
+ * and what they return.
+ *
+ * Example of a properly documented function:
+ */
+/*
+/**
+ * Get a formatted price for a product.
+ *
+ * @param int   $product_id The product ID.
+ * @param array $args       Optional. Formatting options.
+ * @return string The formatted price, or an empty string if not found.
+ * /
+function rocadev_get_formatted_price( $product_id, $args = array() ) {
+    // ... implementation ...
+    return '';
+}
+*/
+
+
+/* -------------------------------------------------------------------------- */
+/* 19.6 PRACTICAL CHECKLIST                                                   */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * A quick checklist you can apply to any WordPress PHP file:
+ *
+ * [ ] Prefix all functions, classes, and globals (e.g. rocadev_).
+ * [ ] Use tabs for indentation.
+ * [ ] Use snake_case for functions and variables.
+ * [ ] Use Yoda conditions for comparisons.
+ * [ ] Sanitize all input.
+ * [ ] Validate input where a specific format is expected.
+ * [ ] Escape all output (esc_html, esc_attr, esc_url).
+ * [ ] Verify nonces for forms and AJAX/REST write actions.
+ * [ ] Add DocBlocks to functions and classes.
+ * [ ] Run phpcs / phpcbf with the WordPress standard before committing.
+ *
+ * See examples/coding-standards.php for a side-by-side "before and after"
+ * file showing the same code written badly and then corrected to follow the
+ * WordPress Coding Standards.
+ */
+

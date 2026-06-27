@@ -33,6 +33,7 @@ nonces, and inline explanations.
 | `rest-custom-endpoint.php` | 18.7 / 18.8 | Custom REST routes: list + filter by `?industry=`, single item by ID, shared formatter |
 | `rest-custom-search.php` | 18.21 / 18.22 | Live-search REST endpoint + debounced, XSS-safe frontend JS |
 | `ajax-load-more.php` | 15.2 | Classic `admin-ajax` "Load More" with nonce verification + frontend JS |
+| `coding-standards.php` | 19 | Before/after of the same feature — bad style vs WordPress Coding Standards (prefixing, snake_case, Yoda conditions, sanitize/validate/escape, nonces, DocBlocks) |
 
 ## Dependencies between files
 
