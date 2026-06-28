@@ -43,7 +43,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function greet($Name){ // This function is not prefixed, so it could collide with other plugins that define greet(). A prefix means adding a unique identifier to the function name, e.g., rocadev_greet().
 if($Name==''){$Name='Guest';} // This is a Yoda condition risk: if ($Name = '') would assign an empty string to $Name instead of comparing it. Use Yoda conditions: if ( '' === $Name ) { ... }. Yoda is a coding style where the constant is on the left side of the comparison, which prevents accidental assignment.
-echo '<p>Hello, '.$Name.'</p>';
+echo '<p>Hello, '.$Name.'</p>'; // This echoes user input directly with no escaping, which is a security risk (XSS). Use esc_html() or similar functions to escape output: echo '<p>Hello, ' . esc_html( $Name ) . '</p>';
 }
 
 function SaveName(){
@@ -67,14 +67,14 @@ echo 'Saved: '.$n;
  * - Output escaped with esc_html().
  *
  * @param string $name Visitor name. Defaults to "Guest" when empty.
- * @return void
+ * @return void // This function echoes output directly, so it does not return a value.
  */
-function rocadev_greet( $name = '' ) {
-	if ( '' === $name ) {
-		$name = 'Guest';
+function rocadev_greet( $name = '' ) { // Default to empty string if no name is provided.
+	if ( '' === $name ) { // Yoda condition: check if $name is an empty string.
+		$name = 'Guest'; // Default to "Guest" if no name is provided.
 	}
 
-	echo '<p>Hello, ' . esc_html( $name ) . '</p>';
+	echo '<p>Hello, ' . esc_html( $name ) . '</p>'; // Escape output to prevent XSS vulnerabilities.
 }
 
 /**
