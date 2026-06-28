@@ -41,8 +41,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * - No DocBlocks.
  */
 
-function greet($Name){
-if($Name==''){$Name='Guest';}
+function greet($Name){ // This function is not prefixed, so it could collide with other plugins that define greet(). A prefix means adding a unique identifier to the function name, e.g., rocadev_greet().
+if($Name==''){$Name='Guest';} // This is a Yoda condition risk: if ($Name = '') would assign an empty string to $Name instead of comparing it. Use Yoda conditions: if ( '' === $Name ) { ... }. Yoda is a coding style where the constant is on the left side of the comparison, which prevents accidental assignment.
 echo '<p>Hello, '.$Name.'</p>';
 }
 
