@@ -150,3 +150,9 @@
 
     // For example, if you have a website about books, you might use categories to group books by genre (e.g., Fiction, Non-Fiction, Mystery) and tags to describe specific attributes of each book (e.g., Author, Publication Year, Awards). This way, users can easily browse through your content based on their interests and preferences. Taxonomies in WordPress are a way to classify and organize content into groups or categories. They help users navigate and find related content on a website more easily. WordPress comes with built-in taxonomies like categories and tags, but developers can also create custom taxonomies to suit the specific needs of their website. By using taxonomies effectively, you can improve the user experience and make your content more discoverable.
 }
+
+/* 11. WordPress REST API */
+
+{
+    // The WordPress REST API is an interface that allows other applications to interact with your WordPress site by sending and receiving data in a standardized way. It uses HTTP requests (like GET, POST, PUT, DELETE) to access and manipulate WordPress content, users, media, and other data. This enables developers to build custom applications, integrate WordPress with other systems, and create headless WordPress setups.
+}
