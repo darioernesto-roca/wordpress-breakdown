@@ -2538,3 +2538,381 @@ function rocadev_get_formatted_price( $product_id, $args = array() ) {
  * WordPress Coding Standards.
  */
 
+
+/* ========================================================================== */
+/* 20. THEMES IN DEPTH: CLASSIC THEMES AND BLOCK THEMES                        */
+/* ========================================================================== */
+
+/**
+ * Section 4 introduced theme TYPES at a high level. This section zooms in on how
+ * the two dominant approaches are actually built and customized:
+ *
+ *   - CLASSIC themes  -> PHP templates + functions.php (the "old" but still very
+ *                        common way; most agency/legacy sites are classic).
+ *   - BLOCK themes    -> templates made of blocks + a theme.json, edited visually
+ *                        through Full Site Editing (FSE). The modern default since
+ *                        WordPress 5.9 / the Twenty Twenty-Two theme.
+ *
+ * Mental model:
+ *   Classic = "the theme is PHP code; the editor only edits CONTENT."
+ *   Block   = "the theme is data (theme.json + block markup); the editor edits the
+ *              CONTENT *and* the LAYOUT, header, footer, and styles."
+ *
+ * You will meet both in real projects, so know how each is structured.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 20.1 CLASSIC THEMES — THEME STRUCTURE                                       */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * A classic theme is a folder in wp-content/themes/. Its required and common
+ * building blocks:
+ *
+ * (a) style.css     - REQUIRED. Its header comment is the theme's identity card.
+ *                     WordPress reads the metadata here to list the theme under
+ *                     Appearance > Themes. (CSS rules can also live here, but most
+ *                     real themes enqueue separate stylesheets — see section 8.)
+ *
+ * (b) functions.php - The theme's "bootstrap". Runs on every request. This is
+ *                     where you declare theme supports, register menus and widget
+ *                     areas, enqueue assets, and hook into WordPress. It behaves
+ *                     like a plugin that is active only while this theme is.
+ *
+ * (c) Template Files - The PHP files that render pages: index.php, header.php,
+ *                     footer.php, single.php, page.php, archive.php, 404.php, etc.
+ *                     WordPress picks which one to use via the Template Hierarchy.
+ *
+ * (d) Child Themes  - A separate theme that inherits from a parent so you can
+ *                     customize without losing changes on parent updates
+ *                     (see 4.3 and 20.2 below).
+ *
+ * (e) Template Hierarchy - The deterministic set of rules WordPress follows to
+ *                     decide which template file renders the current request.
+ */
+
+// (a) Example style.css header — the minimum metadata WordPress looks for.
+/*
+/*
+Theme Name: Rocadev Classic
+Theme URI: https://example.com/rocadev-classic
+Author: Rocadev
+Description: A lightweight classic starter theme.
+Version: 1.0.0
+Requires at least: 6.0
+Requires PHP: 7.4
+License: GPL-2.0-or-later
+Text Domain: rocadev-classic
+* /
+*/
+
+/**
+ * (e) Template Hierarchy — how WordPress chooses a template (simplified).
+ *
+ * For a SINGLE BLOG POST, WordPress looks for the first file that exists:
+ *   single-post-{slug}.php  ->  single-post.php  ->  single.php  ->  singular.php  ->  index.php
+ *
+ * For a PAGE:
+ *   page-{slug}.php  ->  page-{id}.php  ->  page.php  ->  singular.php  ->  index.php
+ *
+ * For a CATEGORY archive:
+ *   category-{slug}.php  ->  category-{id}.php  ->  category.php  ->  archive.php  ->  index.php
+ *
+ * For a CUSTOM POST TYPE single (e.g. 'case_study'):
+ *   single-case_study.php  ->  single.php  ->  singular.php  ->  index.php
+ *
+ * index.php is the ultimate fallback and the ONLY strictly required template
+ * (together with style.css) for a theme to be valid.
+ *
+ * Real-life use case:
+ * Your "Case Studies" CPT (section 9) needs a different layout than blog posts.
+ * You add single-case_study.php; WordPress automatically uses it for those URLs
+ * without you writing any routing code.
+ */
+
+/**
+ * See examples/classic-theme-setup.php for a working functions.php "theme setup":
+ * theme supports (logo, title-tag, post-thumbnails), menu locations, a footer
+ * widget area, and a Customizer setting — plus the header.php/footer.php template
+ * tags that output them.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 20.2 CLASSIC THEMES — CHILD THEMES (RECAP + WHY)                            */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * A child theme is a tiny theme whose style.css declares a "Template:" line
+ * pointing at the parent. WordPress then loads the parent's templates/functions
+ * and lets the child OVERRIDE any of them.
+ *
+ * Override rules:
+ *   - Template files: a file in the child (e.g. single.php) REPLACES the parent's.
+ *   - functions.php:  the child's runs IN ADDITION to the parent's (not replaced).
+ *
+ * Why it matters:
+ *   Editing a third-party parent theme directly means your changes are wiped on
+ *   the next update. A child theme keeps your code separate and update-safe.
+ *
+ * Minimum files: style.css (with the Template: header) + functions.php.
+ * See 4.3 for the style.css header and the parent/child enqueue snippet.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 20.3 CLASSIC THEMES — THEME CUSTOMIZATION                                   */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * "Theme customization" = the features that let a SITE OWNER (not a developer)
+ * adjust the site, plus the developer tools that expose those options.
+ *
+ * MENUS
+ *   The theme registers menu LOCATIONS with register_nav_menus(). The client then
+ *   builds menus under Appearance > Menus and assigns them to a location. The
+ *   template prints them with wp_nav_menu( array( 'theme_location' => 'primary' ) ).
+ *
+ * CUSTOMIZER (Appearance > Customize)
+ *   A live-preview settings panel. Developers add sections/settings/controls via
+ *   the Customizer API on the 'customize_register' hook. Values are read with
+ *   get_theme_mod(). Every setting MUST have a sanitize_callback. Use
+ *   'transport' => 'postMessage' + selective refresh to update the preview without
+ *   a full reload. (Block themes replace much of this with the Site Editor.)
+ *
+ * WIDGETS
+ *   Reusable blocks of content (search, recent posts, custom HTML) dropped into
+ *   "widget areas" (a.k.a. sidebars). The theme registers an area with
+ *   register_sidebar() and renders it with dynamic_sidebar( 'footer-1' ).
+ *
+ * TEMPLATE TAGS
+ *   The PHP functions themes call to OUTPUT dynamic data inside templates:
+ *   the_title(), the_content(), the_permalink(), the_post_thumbnail(),
+ *   bloginfo(), wp_nav_menu(), dynamic_sidebar(), the_custom_logo(), etc.
+ *   Most "the_*" tags echo directly; their "get_the_*" siblings return a value so
+ *   you can escape/modify it before printing.
+ *
+ * CUSTOM FIELDS
+ *   Extra per-post data ("post meta") beyond title/content — e.g. a subtitle,
+ *   price, or client name. Stored in wp_postmeta as key/value pairs. Read with
+ *   get_post_meta(); a metabox provides a friendly UI to edit them.
+ *
+ * ACF (Advanced Custom Fields)
+ *   The most popular PLUGIN for custom fields. You define field groups in the
+ *   admin (text, image, repeater, relationship, flexible content...) and read them
+ *   in templates with get_field('name') / the_field('name'). It generates the same
+ *   post-meta storage + metabox UI you would otherwise hand-code.
+ *
+ * METABOX
+ *   Two meanings: (1) any box on the edit screen, added with add_meta_box(); and
+ *   (2) "Meta Box" (metabox.io), a plugin similar in spirit to ACF. Hand-coding a
+ *   metabox is the DIY alternative to ACF — you control the UI and the save logic
+ *   (nonce + capability check + sanitize), which is exactly what ACF does for you.
+ */
+
+// Example: reading a Customizer value and a custom field inside a template.
+/*
+$phone = get_theme_mod( 'rocadev_phone', '' );
+if ( '' !== $phone ) {
+    echo '<a href="tel:' . esc_attr( $phone ) . '">' . esc_html( $phone ) . '</a>';
+}
+
+// Custom field (post meta). With ACF this would be: the_field('client_name');
+$client = get_post_meta( get_the_ID(), '_rocadev_client_name', true );
+echo esc_html( $client );
+*/
+
+/**
+ * Examples for this subsection:
+ *   - examples/classic-theme-setup.php  -> Menus, Widgets, Customizer, Template Tags.
+ *   - examples/custom-metabox.php       -> Custom Fields via a hand-coded metabox
+ *                                          (the manual version of what ACF/Metabox do),
+ *                                          including nonce, capability check, sanitize,
+ *                                          and escaped output.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 20.4 BLOCK THEMES — OVERVIEW                                                */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * A block theme builds the ENTIRE site out of blocks and is edited visually
+ * through Full Site Editing. Instead of PHP template files, templates are HTML
+ * files containing block markup, and design tokens live in a single theme.json.
+ *
+ * Key differences from classic themes:
+ *   - No PHP required for templates (though PHP/functions.php is still allowed).
+ *   - The site owner can edit header, footer, and templates — not just content.
+ *   - Colors/typography/spacing are declared once in theme.json and reused
+ *     everywhere as CSS variables.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 20.5 BLOCK THEMES — THEME STRUCTURE                                         */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * A minimal block theme folder looks like:
+ *
+ *   your-theme/
+ *   |- style.css            (still required, for the header metadata)
+ *   |- theme.json           (settings + default styles; the design "brain")
+ *   |- templates/
+ *   |   |- index.html       (required fallback, block markup)
+ *   |   |- single.html
+ *   |   |- page.html
+ *   |   `- archive.html
+ *   |- parts/
+ *   |   |- header.html      (a Template Part)
+ *   |   `- footer.html      (a Template Part)
+ *   |- patterns/            (file-based block patterns, auto-registered)
+ *   `- functions.php        (OPTIONAL: enqueue extra assets, register patterns, etc.)
+ *
+ * The Template Hierarchy still applies, but with .html files in /templates/
+ * instead of .php files in the theme root.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 20.6 BLOCK THEMES — FULL SITE EDITING (FSE)                                 */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Full Site Editing is the experience at Appearance > Editor. With a block theme
+ * active, the site owner can visually edit:
+ *   - Templates (single, page, archive, 404...) and Template Parts (header/footer).
+ *   - Global Styles (colors, typography, spacing) layered on top of theme.json.
+ *   - Navigation, via the Navigation block.
+ *
+ * How edits are stored:
+ *   theme.json and the theme's .html files are the DEFAULTS shipped by the theme.
+ *   When a user edits in the Site Editor, WordPress saves the override to the
+ *   DATABASE (as wp_template / wp_template_part / wp_global_styles posts). The
+ *   theme files are never modified. "Clear customizations" reverts to the theme
+ *   defaults — this is the "Overrides" idea in 20.10.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 20.7 BLOCK THEMES — TEMPLATE PARTS                                          */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * A Template Part is a reusable chunk of block markup — most commonly the header
+ * and the footer — stored in /parts/ and declared in theme.json under
+ * "templateParts" with an "area" (header | footer | uncategorized).
+ *
+ * Templates include a part with the Template Part block:
+ *   <!-- wp:template-part {"slug":"header","area":"header"} /-->
+ *
+ * This is the block-theme equivalent of classic get_header() / get_footer():
+ * define the header once, reuse it across every template, and let the owner edit
+ * it in one place from the Site Editor.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 20.8 BLOCK THEMES — BLOCK PATTERNS                                          */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * A block pattern is a pre-designed arrangement of blocks (hero, CTA, pricing,
+ * testimonials) the user inserts with one click and then edits freely. Patterns
+ * give clients consistent, on-brand sections without rebuilding layouts each time.
+ *
+ * Two ways to provide patterns:
+ *   - File-based (preferred for themes): a PHP file in /patterns/ with a header
+ *     comment; WordPress auto-registers it. No hooks needed.
+ *   - Code-based: register_block_pattern() + register_block_pattern_category(),
+ *     useful in plugins or for dynamically generated patterns.
+ *
+ * Patterns can also be pulled from the wordpress.org Pattern Directory.
+ *
+ * See examples/block-patterns.php for both approaches (a full-width "Call to
+ * action" pattern registered in code, plus the file-based equivalent).
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 20.9 BLOCK THEMES — STYLES (theme.json + GLOBAL STYLES + VARIATIONS)        */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * theme.json is the heart of a block theme's design system. It has two main keys:
+ *
+ *   "settings" - what the editor is ALLOWED to do and the presets users can pick:
+ *                color palette, font sizes, spacing scale, layout content/wide
+ *                widths, whether custom colors are permitted, etc. Each preset
+ *                becomes a CSS variable, e.g. --wp--preset--color--brand.
+ *
+ *   "styles"   - the DEFAULT appearance built from those presets: page background
+ *                and text color, base typography, and per-element / per-block
+ *                styles (links, buttons, headings, core/quote, ...).
+ *
+ * Benefits:
+ *   - One source of truth: change the brand color once, it updates everywhere.
+ *   - Consistent options: the editor only offers the palette you defined.
+ *   - Less custom CSS: most styling is data, not stylesheets.
+ *
+ * STYLE VARIATIONS
+ *   Alternate full-theme looks (e.g. "Light", "Dark", "High contrast") shipped as
+ *   JSON files in /styles/. The user switches between them in the Site Editor with
+ *   one click. Each file mirrors the theme.json "settings"/"styles" shape.
+ *
+ * See examples/block-theme-theme-json.json for a commented, realistic theme.json
+ * (palette, fluid typography, spacing scale, element/block styles, template parts).
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 20.10 BLOCK THEMES — OVERRIDES                                              */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * "Overrides" appears in two related places in the block world:
+ *
+ * (1) USER OVERRIDES OF THE THEME (Site Editor)
+ *     Theme files (theme.json, templates, parts) are defaults. Edits made in the
+ *     Site Editor are stored in the DATABASE and take precedence over the theme.
+ *     A "Clear customizations" / "Reset" action discards the database copy and
+ *     falls back to the theme's shipped version. Knowing this is essential when a
+ *     client says "my header changes won't go away after I updated the theme" —
+ *     the database override is winning over the theme file.
+ *
+ * (2) PATTERN / SYNCED-PATTERN OVERRIDES (block "bindings")
+ *     A synced pattern (formerly "reusable block") normally shows identical
+ *     content everywhere. With the Overrides feature, specific blocks inside a
+ *     synced pattern can be marked overridable, so each insertion keeps the shared
+ *     DESIGN but allows unique CONTENT (e.g. a shared "team member card" layout
+ *     with a different name/photo per page). This is powered by the Block Bindings
+ *     API under the hood.
+ *
+ * Mental model:
+ *   Theme files = defaults  ->  database (Site Editor) = overrides  ->  what renders.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 20.11 CLASSIC vs BLOCK — QUICK COMPARISON                                   */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * | Concern              | Classic theme                 | Block theme                  |
+ * |----------------------|-------------------------------|------------------------------|
+ * | Templates            | PHP files (single.php...)     | HTML block files (single.html)|
+ * | Header/footer        | get_header() / get_footer()   | Template Parts               |
+ * | Global design tokens | CSS + functions.php           | theme.json                   |
+ * | Owner edits layout?  | No (content only)             | Yes (Full Site Editing)      |
+ * | Site-wide settings   | Customizer API                | Site Editor + Global Styles  |
+ * | Reusable sections    | template parts / includes     | Block Patterns               |
+ * | Custom fields        | Metabox / ACF                 | Metabox / ACF (still work)   |
+ *
+ * Which to choose:
+ *   - New build, design flexibility for the client -> block theme (modern default).
+ *   - Maintaining an existing PHP/page-builder site -> classic theme.
+ *   - Hybrid themes (4.4) let a classic base adopt block-editor content gradually.
+ */
+

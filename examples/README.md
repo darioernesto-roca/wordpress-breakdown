@@ -34,6 +34,10 @@ nonces, and inline explanations.
 | `rest-custom-search.php` | 18.21 / 18.22 | Live-search REST endpoint + debounced, XSS-safe frontend JS |
 | `ajax-load-more.php` | 15.2 | Classic `admin-ajax` "Load More" with nonce verification + frontend JS |
 | `coding-standards.php` | 19 | Before/after of the same feature — bad style vs WordPress Coding Standards (prefixing, snake_case, Yoda conditions, sanitize/validate/escape, nonces, DocBlocks) |
+| `classic-theme-setup.php` | 20 | Classic theme `functions.php` setup: theme supports, nav menu locations, a footer widget area, a sanitized Customizer setting with selective refresh, and the header/footer template tags that output them |
+| `custom-metabox.php` | 20 | Hand-coded custom-field metabox (the manual version of ACF/Meta Box): render UI, save with nonce + capability check + sanitize, read with escaped output |
+| `block-patterns.php` | 20 | Registering a block pattern + pattern category in code, plus the file-based `/patterns/` equivalent |
+| `block-theme-theme-json.json` | 20 | Commented, realistic `theme.json` for a block theme: palette, fluid typography, spacing scale, element/block styles, and template parts |
 
 ## Dependencies between files
 

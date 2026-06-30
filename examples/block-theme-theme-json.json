@@ -1,0 +1,75 @@
+{
+	"//": "Example: theme.json for a Block Theme (FSE). Maps to section 20 (Block Themes > Styles/Settings).",
+	"//how-to-use": "Save as theme.json in the ROOT of a block theme folder (wp-content/themes/your-theme/theme.json). It is the single source of truth for design tokens (colors, fonts, spacing) and default block styles. The Site Editor (Appearance > Editor) writes user changes back into the database, layering on top of this file.",
+
+	"$schema": "https://schemas.wp.org/trunk/theme.json",
+	"version": 3,
+
+	"settings": {
+		"//": "settings = what the editor is ALLOWED to do + the palette/scale users pick from.",
+		"appearanceTools": true,
+		"layout": {
+			"contentSize": "720px",
+			"wideSize": "1100px"
+		},
+		"color": {
+			"custom": false,
+			"palette": [
+				{ "slug": "brand",      "name": "Brand",      "color": "#1a73e8" },
+				{ "slug": "brand-dark", "name": "Brand Dark", "color": "#0b3d91" },
+				{ "slug": "ink",        "name": "Ink",        "color": "#1f2933" },
+				{ "slug": "paper",      "name": "Paper",      "color": "#ffffff" }
+			]
+		},
+		"typography": {
+			"fluid": true,
+			"fontSizes": [
+				{ "slug": "small",  "name": "Small",  "size": "0.9rem" },
+				{ "slug": "medium", "name": "Medium", "size": "1.1rem" },
+				{ "slug": "large",  "name": "Large",  "size": "1.6rem" },
+				{ "slug": "xlarge", "name": "XLarge", "size": "2.4rem" }
+			]
+		},
+		"spacing": {
+			"units": [ "px", "em", "rem", "%", "vh", "vw" ],
+			"spacingScale": { "steps": 7 }
+		}
+	},
+
+	"styles": {
+		"//": "styles = the DEFAULT look applied using the tokens above.",
+		"color": {
+			"background": "var(--wp--preset--color--paper)",
+			"text": "var(--wp--preset--color--ink)"
+		},
+		"typography": {
+			"fontSize": "var(--wp--preset--font-size--medium)",
+			"lineHeight": "1.6"
+		},
+		"elements": {
+			"link": {
+				"color": { "text": "var(--wp--preset--color--brand)" }
+			},
+			"button": {
+				"color": {
+					"background": "var(--wp--preset--color--brand)",
+					"text": "var(--wp--preset--color--paper)"
+				}
+			}
+		},
+		"blocks": {
+			"core/heading": {
+				"typography": { "fontWeight": "700" }
+			}
+		}
+	},
+
+	"customTemplates": [
+		{ "name": "page-no-title", "title": "Page (no title)", "postTypes": [ "page" ] }
+	],
+
+	"templateParts": [
+		{ "name": "header", "title": "Header", "area": "header" },
+		{ "name": "footer", "title": "Footer", "area": "footer" }
+	]
+}
