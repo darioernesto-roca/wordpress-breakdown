@@ -2864,6 +2864,9 @@ echo esc_html( $client );
  *
  * See examples/block-theme-theme-json.json for a commented, realistic theme.json
  * (palette, fluid typography, spacing scale, element/block styles, template parts).
+ * 
+ * Example in: C:\Users\Dario Ernesto\Documents\rocadev\personal-folder\wordpress\examples\block-theme-theme-json.json
+ * 
  */
 
 
