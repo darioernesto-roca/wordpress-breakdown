@@ -38,6 +38,7 @@ nonces, and inline explanations.
 | `custom-metabox.php` | 20 | Hand-coded custom-field metabox (the manual version of ACF/Meta Box): render UI, save with nonce + capability check + sanitize, read with escaped output |
 | `block-patterns.php` | 20 | Registering a block pattern + pattern category in code, plus the file-based `/patterns/` equivalent |
 | `block-theme-theme-json.json` | 20 | Commented, realistic `theme.json` for a block theme: palette, fluid typography, spacing scale, element/block styles, and template parts |
+| `plugin-basics.php` | 21 | Complete single-file plugin ("Maintenance Notice"): plugin header, activation/deactivation hooks, Settings API options page with sanitization, escaped frontend banner with a filter extension point, and an `uninstall.php` reference |
 
 ## Dependencies between files
 

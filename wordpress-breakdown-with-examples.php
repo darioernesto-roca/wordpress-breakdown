@@ -1,4 +1,5 @@
 <?php
+
 /**
  * WordPress Breakdown with Examples and Real-Life Use Cases
  * --------------------------------------------------------
@@ -2920,7 +2921,280 @@ echo esc_html( $client );
  */
 
 /* ========================================================================== */
-/* 21. PLUGINS BASICS                        */
+/* 21. PLUGINS BASICS                                                         */
 /* ========================================================================== */
 
-// WordPress plugins are essentially bundles of code that you can upload to your WordPress site to extend its functionality. They allow you to add new features, modify existing ones, or integrate with third-party services without having to directly edit the core WordPress files. Think of them as apps for your website, enabling you to customize and enhance your site's capabilities with ease.
+/**
+ * WordPress plugins are bundles of code that you upload to your site to extend
+ * its functionality. They add new features, modify existing ones, or integrate
+ * with third-party services WITHOUT editing WordPress core files. Think of them
+ * as apps for your website.
+ *
+ * Why "never edit core" matters:
+ *   WordPress core is replaced wholesale on every update. Anything you change in
+ *   wp-admin/ or wp-includes/ is wiped. Plugins (and themes) live in wp-content/,
+ *   which updates do not touch — that is THE extension mechanism.
+ *
+ * How a plugin talks to WordPress:
+ *   Through HOOKS (section 5). A plugin is essentially a collection of
+ *   add_action() / add_filter() calls: "when WordPress does X, also run my code."
+ *   No hooks, no plugin — there is no other sanctioned way in.
+ *
+ * Mental model:
+ *   Theme  = how the site LOOKS   (presentation).
+ *   Plugin = what the site DOES   (functionality).
+ *   WordPress core = the platform both of them plug into.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 21.1 ANATOMY — WHAT MAKES A FILE A PLUGIN                                   */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * A plugin is a folder (or single file) inside wp-content/plugins/ whose main
+ * PHP file starts with a special "Plugin Header" comment. That header is the
+ * ONLY requirement — WordPress scans plugin files, finds the header, and lists
+ * the plugin under Plugins > Installed Plugins.
+ *
+ * (a) SINGLE-FILE plugin — fine for small utilities:
+ *
+ *       wp-content/plugins/rocadev-toolkit.php
+ *
+ * (b) FOLDER-BASED plugin — the normal shape as soon as it grows:
+ *
+ *       wp-content/plugins/rocadev-toolkit/
+ *       ├── rocadev-toolkit.php   <- main file (holds the Plugin Header)
+ *       ├── uninstall.php         <- cleanup on delete (see 21.3)
+ *       ├── includes/             <- PHP classes / feature files
+ *       ├── admin/                <- admin-only screens and assets
+ *       ├── public/               <- frontend assets (css/js)
+ *       ├── languages/            <- translation files (.pot/.po/.mo)
+ *       └── readme.txt            <- required only for the wp.org directory
+ *
+ * The main file conventionally matches the folder name. WordPress identifies an
+ * active plugin as "folder/main-file.php" (e.g. "rocadev-toolkit/rocadev-toolkit.php")
+ * in the 'active_plugins' option — renaming either deactivates it.
+ *
+ * Loading model (important for performance):
+ *   Every ACTIVE plugin's main file runs on EVERY request — admin, frontend,
+ *   REST, cron. Keep the main file a light "bootstrap" (define constants, require
+ *   files, register hooks) and do real work only inside hook callbacks.
+ *
+ * Useful path/URL helpers inside plugin code:
+ *   plugin_dir_path( __FILE__ )  -> filesystem path to this plugin's folder.
+ *   plugin_dir_url( __FILE__ )   -> URL to this plugin's folder (for enqueues).
+ *   plugin_basename( __FILE__ )  -> "rocadev-toolkit/rocadev-toolkit.php".
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 21.2 THE PLUGIN HEADER                                                      */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * The header is the plugin's identity card (same idea as a theme's style.css
+ * header, section 20.1). Only "Plugin Name" is strictly required; the rest is
+ * strongly recommended metadata.
+ */
+
+/*
+<?php
+/**
+ * Plugin Name:       Rocadev Toolkit
+ * Plugin URI:        https://example.com/plugins/rocadev-toolkit
+ * Description:       Site functionality for rocadev projects: CPTs, shortcodes, tweaks.
+ * Version:           1.0.0
+ * Requires at least: 6.0
+ * Requires PHP:      7.4
+ * Author:            Rocadev
+ * Author URI:        https://example.com
+ * License:           GPL-2.0-or-later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:       rocadev-toolkit
+ * Domain Path:       /languages
+ * /
+*/
+
+/**
+ * Field notes:
+ *   - Plugin Name        REQUIRED. What appears in the Plugins list.
+ *   - Version            Drives the update mechanism; bump it on every release.
+ *   - Requires at least / Requires PHP
+ *                        WordPress refuses to activate the plugin on older
+ *                        environments instead of fataling — always set these.
+ *   - Text Domain        Must match the slug used in __() / _e() translation
+ *                        calls; WordPress 4.6+ loads it automatically for
+ *                        wp.org-hosted plugins.
+ *   - License            wp.org requires a GPL-compatible license.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 21.3 LIFECYCLE — ACTIVATION, DEACTIVATION, UNINSTALL                        */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * A plugin has three lifecycle moments, each with its own hook and its own
+ * "what belongs here" rules:
+ *
+ * (a) ACTIVATION — register_activation_hook()
+ *     Runs ONCE when the user clicks "Activate".
+ *     Belongs here: create default options, create custom DB tables (dbDelta),
+ *     schedule cron events, and flush rewrite rules AFTER registering CPTs
+ *     (the single most common activation task — see section 9).
+ *
+ * (b) DEACTIVATION — register_deactivation_hook()
+ *     Runs ONCE when the user clicks "Deactivate".
+ *     Belongs here: clear scheduled cron events, flush caches/transients,
+ *     flush rewrite rules. Does NOT belong here: deleting user data — the user
+ *     may be deactivating temporarily (e.g. debugging) and expects data back.
+ *
+ * (c) UNINSTALL — uninstall.php (preferred) or register_uninstall_hook()
+ *     Runs when the user DELETES the plugin from the Plugins screen.
+ *     Belongs here: remove options, drop custom tables, delete plugin post meta
+ *     — leave the site as if the plugin never existed.
+ *     WordPress loads uninstall.php on its own; guard it with the
+ *     WP_UNINSTALL_PLUGIN constant check.
+ */
+
+/*
+// Main plugin file:
+register_activation_hook( __FILE__, 'rocadev_toolkit_activate' );
+function rocadev_toolkit_activate() {
+    rocadev_register_case_study_cpt();     // register the CPT first...
+    flush_rewrite_rules();                 // ...then flush, so its URLs work.
+    add_option( 'rocadev_toolkit_settings', [ 'enabled' => true ] ); // defaults
+}
+
+register_deactivation_hook( __FILE__, 'rocadev_toolkit_deactivate' );
+function rocadev_toolkit_deactivate() {
+    flush_rewrite_rules();                 // CPT rules removed cleanly.
+    wp_clear_scheduled_hook( 'rocadev_toolkit_daily_sync' );
+}
+
+// uninstall.php (separate file in the plugin root):
+if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+    exit; // Only run when WordPress itself triggers the uninstall.
+}
+delete_option( 'rocadev_toolkit_settings' );
+*/
+
+/**
+ * Gotcha: activation/deactivation hooks do NOT run for must-use plugins (21.4),
+ * and they do not run on plugin UPDATES — if you need per-version migrations,
+ * compare a stored version option against the current one on 'plugins_loaded'.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 21.4 WHERE PLUGINS LIVE — REGULAR, MUST-USE, DROP-INS                       */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * (a) REGULAR plugins — wp-content/plugins/
+ *     Activated/deactivated per site from the admin. 99% of plugins.
+ *
+ * (b) MUST-USE plugins — wp-content/mu-plugins/
+ *     Single PHP files (WordPress does NOT scan subfolders) that are ALWAYS
+ *     active: no activation step, cannot be disabled from the admin, and load
+ *     BEFORE regular plugins. Agencies use them for code that must never be
+ *     turned off by a client (security headers, environment tweaks). Folder-based
+ *     mu-plugins need a small loader file that require()s them.
+ *
+ * (c) DROP-INS — special filenames directly in wp-content/
+ *     Core looks for these by exact name and lets them REPLACE a core subsystem:
+ *       advanced-cache.php  -> page cache (installed by caching plugins)
+ *       object-cache.php    -> object cache (Redis/Memcached plugins)
+ *       db.php              -> database layer
+ *       maintenance.php     -> custom "briefly unavailable" screen
+ *     You rarely write these by hand, but you must recognize them: a stale
+ *     object-cache.php left behind by a removed Redis plugin is a classic cause
+ *     of a broken site.
+ *
+ * Load order per request (simplified):
+ *   drop-ins -> mu-plugins -> network plugins (multisite) -> active plugins
+ *   -> theme functions.php -> 'init' and the rest of the request.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 21.5 PLUGIN vs THEME functions.php — WHERE CODE BELONGS                     */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Both a plugin and functions.php can call the same APIs, so the question is
+ * not "can it work" but "what happens when the theme changes".
+ *
+ * Rule of thumb: if the feature should SURVIVE A THEME SWITCH, it belongs in a
+ * plugin. If it only makes sense for this specific design, it belongs in the theme.
+ *
+ * Plugin (site functionality):
+ *   - Custom Post Types and taxonomies (section 9/10) — putting a CPT in
+ *     functions.php means the client's case studies "disappear" when the theme
+ *     changes. The data is still in the DB, but unreachable. Classic mistake.
+ *   - Shortcodes, REST endpoints, integrations, SEO/analytics, custom user roles.
+ *
+ * Theme (presentation):
+ *   - Template-specific asset enqueues, image sizes, menu locations,
+ *     widget areas, theme supports.
+ *
+ * The common agency pattern is one small "site core" / "functionality" plugin
+ * per project holding the CPTs, taxonomies and business logic, next to whatever
+ * theme is active.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 21.6 GOOD-CITIZEN BASICS (SECURITY + COEXISTENCE)                           */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Your plugin shares one PHP process and one database with core, the theme, and
+ * every other plugin. The habits that keep that safe (details in section 19):
+ *
+ * (a) Guard direct access — first line after the header:
+ *       if ( ! defined( 'ABSPATH' ) ) { exit; }
+ *     Otherwise anyone can execute the file directly via its URL.
+ *
+ * (b) Prefix EVERYTHING global — functions, classes, option names, hooks,
+ *     transients, script/style handles: rocadev_toolkit_*. Two plugins defining
+ *     get_settings() = fatal error.
+ *
+ * (c) Sanitize input, escape output, verify nonces + capabilities on every
+ *     form/AJAX/REST handler (sections 19.3 and 18.12/18.13).
+ *
+ * (d) Enqueue assets properly (section 8) with plugin_dir_url( __FILE__ ) —
+ *     never print <script> tags by hand or hardcode /wp-content/ paths.
+ *
+ * (e) Use the Settings API / Options API for configuration instead of custom
+ *     tables when possible; store one array option per plugin, not 30 options.
+ *
+ * (f) Make it translatable: wrap user-facing strings in __( 'Text', 'text-domain' ).
+ *
+ * (g) Fire your own do_action() / apply_filters() extension points (section 5)
+ *     so OTHER developers can extend your plugin the same way you extend core.
+ */
+
+
+/* -------------------------------------------------------------------------- */
+/* 21.7 SUMMARY / CHECKLIST                                                    */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * - A plugin = folder in wp-content/plugins/ + a main file with a Plugin Header.
+ * - It interacts with WordPress ONLY through hooks; the main file is a light
+ *   bootstrap that runs on every request.
+ * - Lifecycle: activation (setup), deactivation (pause, keep data),
+ *   uninstall.php (remove all traces).
+ * - mu-plugins are always-on; drop-ins replace core subsystems by filename.
+ * - Theme-switch-survivable functionality (CPTs!) goes in a plugin, not the theme.
+ * - ABSPATH guard, prefixes, sanitize/escape/nonce, proper enqueues, text domain.
+ *
+ * See examples/plugin-basics.php for a complete, working single-file plugin
+ * ("Rocadev Maintenance Notice"): plugin header, lifecycle hooks, a Settings API
+ * options page, and an escaped frontend banner — ready to drop into
+ * wp-content/plugins/ and activate.
+ *
+ * Example in: C:\Users\Dario Ernesto\Documents\rocadev\personal-folder\wordpress\examples\plugin-basics.php
+ */
