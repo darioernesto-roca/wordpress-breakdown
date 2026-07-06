@@ -3196,5 +3196,11 @@ delete_option( 'rocadev_toolkit_settings' );
  * options page, and an escaped frontend banner — ready to drop into
  * wp-content/plugins/ and activate.
  *
+ * See examples/plugin-reading-time.php for a second, filter-driven plugin
+ * ("X min read" badge): the_content with main-query guards, word count cached
+ * in post meta on save, lazy backfill for old posts, and extension-point
+ * filters — a plugin that needs NO lifecycle hooks at all.
+ *
  * Example in: C:\Users\Dario Ernesto\Documents\rocadev\personal-folder\wordpress\examples\plugin-basics.php
+ * Example in: C:\Users\Dario Ernesto\Documents\rocadev\personal-folder\wordpress\examples\plugin-reading-time.php
  */

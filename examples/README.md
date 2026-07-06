@@ -39,6 +39,7 @@ nonces, and inline explanations.
 | `block-patterns.php` | 20 | Registering a block pattern + pattern category in code, plus the file-based `/patterns/` equivalent |
 | `block-theme-theme-json.json` | 20 | Commented, realistic `theme.json` for a block theme: palette, fluid typography, spacing scale, element/block styles, and template parts |
 | `plugin-basics.php` | 21 | Complete single-file plugin ("Maintenance Notice"): plugin header, activation/deactivation hooks, Settings API options page with sanitization, escaped frontend banner with a filter extension point, and an `uninstall.php` reference |
+| `plugin-reading-time.php` | 21 / 5 | Filter-driven plugin ("X min read" badge): `the_content` with main-query guards, word count cached in post meta on `save_post` with lazy backfill, extension-point filters, conditional inline styles, and an `uninstall.php` reference |
 
 ## Dependencies between files
 
