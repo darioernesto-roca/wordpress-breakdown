@@ -1,0 +1,54 @@
+# Local WordPress and environment files.
+wp-config.php
+.env
+.env.*
+*.local
+
+# Sensitive configuration and credential material.
+# Keep these patterns even when a file only contains development credentials.
+*credentials*
+*secrets*
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+id_rsa*
+id_ed25519*
+auth.json
+.htpasswd
+
+# Reference files containing credential/security terminology or examples.
+# These entries prevent accidentally re-adding copies after they are untracked;
+# note that Git continues to track files which were committed previously.
+CONTRIBUTING.md
+docs/fundamentals/application-structure.md
+docs/operations/wp-cron.md
+docs/security/hardening-and-vulnerabilities.md
+docs/themes/building-a-theme.md
+examples/block-theme-theme-json.json
+examples/custom-metabox.php
+examples/plugin-reading-time.php
+examples/shortcodes.php
+notes/README.md
+practice/themes/learning-classic/README.md
+wordpress-breakdown-with-examples.php
+wordpress-breakdown.php
+
+# Dependencies and generated output.
+node_modules/
+vendor/
+coverage/
+.phpunit.result.cache
+
+# Logs, editor, and operating-system files.
+*.log
+.DS_Store
+.idea/
+.vscode/
+
+# Do not version real uploads or database exports.
+wp-content/uploads/
+*.sql
+*.sql.gz
