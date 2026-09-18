@@ -10,13 +10,14 @@ structured.
 
 ## Start here
 
-1. Read [how WordPress is structured](docs/fundamentals/application-structure.md).
-2. Follow the [local development workflow](docs/good-practices/development-workflow.md).
-3. Choose the [theme](docs/themes/building-a-theme.md) or
+1. Use the [study checklist](docs/study-checklist.md) to track your progress.
+2. Read [how WordPress is structured](docs/fundamentals/application-structure.md).
+3. Follow the [local development workflow](docs/good-practices/development-workflow.md).
+4. Choose the [theme](docs/themes/building-a-theme.md) or
    [plugin](docs/plugins/building-a-plugin.md) learning path.
-4. Install the corresponding project under [`practice/`](practice/README.md) in
+5. Install the corresponding project under [`practice/`](practice/README.md) in
    a disposable local WordPress site.
-5. Use the [security checklist](docs/security/hardening-and-vulnerabilities.md)
+6. Use the [security checklist](docs/security/hardening-and-vulnerabilities.md)
    before treating any example as production-ready.
 
 ## Repository map
